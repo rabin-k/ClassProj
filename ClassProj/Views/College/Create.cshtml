@@ -1,0 +1,8 @@
+﻿@model ClassProj.Models.CollegeViewModel
+    <form asp-action="Create" asp-controller="College" method="post">
+        Name: <input asp-for="Name" />
+        Address: <input asp-for="Address" />
+        Email: <input asp-for="Email" />
+        <br />
+        <input type="submit" value="Create" />
+    </form>
