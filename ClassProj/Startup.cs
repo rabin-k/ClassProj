@@ -1,4 +1,5 @@
 using ClassProj.Data;
+using ClassProj.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -29,6 +30,8 @@ namespace ClassProj
                 options => options.UseSqlServer(Configuration.GetConnectionString("ClassConnection"))
                 );
             services.AddControllersWithViews();
+
+            services.AddScoped<ICollegeService, CollegeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
