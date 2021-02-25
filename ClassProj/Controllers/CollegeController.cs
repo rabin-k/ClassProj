@@ -53,9 +53,27 @@ namespace ClassProj.Controllers
         [HttpPost]
         public IActionResult Create(CollegeViewModel model)
         {
-            //data save logic
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
 
-            return View(model);
+            var dbModel = GetDataModel(model);
+            _collegeService.AddCollege(dbModel);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private College GetDataModel(CollegeViewModel model)
+        {
+            var dbModel = new College
+            {
+                ID = model.ID,
+                Name = model.Name,
+                Address = model.Address,
+                Email = model.Email
+            };
+            return dbModel;
         }
     }
 }
