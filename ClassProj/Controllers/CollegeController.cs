@@ -75,5 +75,43 @@ namespace ClassProj.Controllers
             };
             return dbModel;
         }
+
+        private CollegeViewModel GetViewModel(College dbModel)
+        {
+            var model = new CollegeViewModel
+            {
+                ID = dbModel.ID,
+                Name = dbModel.Name,
+                Address = dbModel.Address,
+                Email = dbModel.Email
+            };
+            return model;
+        }
+
+        public IActionResult Delete(int id)
+        {
+            _collegeService.DeleteCollege(id);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int id)
+        {
+            var dbCollege = _collegeService.GetCollegeById(id);
+
+            var model = GetViewModel(dbCollege);
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(CollegeViewModel model)
+        {
+            var dbModel = GetDataModel(model);
+            _collegeService.UpdateCollege(dbModel);
+
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
