@@ -3,6 +3,7 @@ using ClassProj.Data.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,6 +30,10 @@ namespace ClassProj
             services.AddDbContext<ClassDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("ClassConnection"))
                 );
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ClassDbContext>()
+                .AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
 
             services.AddScoped<ICollegeService, CollegeService>();
