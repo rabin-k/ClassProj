@@ -30,7 +30,12 @@ namespace ClassProj
             services.AddDbContext<ClassDbContext>(
                 options => options.UseSqlServer(Configuration.GetConnectionString("ClassConnection"))
                 );
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = true;
+                options.User.RequireUniqueEmail = true;
+
+            })
                 .AddEntityFrameworkStores<ClassDbContext>()
                 .AddDefaultTokenProviders();
 
