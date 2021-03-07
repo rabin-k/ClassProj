@@ -40,15 +40,26 @@ namespace ClassProj.Data.Services
 
         public void UpdateCollege(College college)
         {
-            var dbCollege = _dbContext.College.FirstOrDefault(x => x.ID == college.ID);
-            if(dbCollege != null)
+            using (var trans = _dbContext.Database.BeginTransaction())
             {
-                dbCollege.Name = college.Name;
-                dbCollege.Email = college.Email;
-                dbCollege.Address = college.Address;
+                try
+                {
+                    var dbCollege = _dbContext.College.FirstOrDefault(x => x.ID == college.ID);
+                    if (dbCollege != null)
+                    {
+                        dbCollege.Name = college.Name;
+                        dbCollege.Email = college.Email;
+                        dbCollege.Address = college.Address;
 
-                _dbContext.College.Update(dbCollege);
-                _dbContext.SaveChanges();
+                        _dbContext.College.Update(dbCollege);
+                        _dbContext.SaveChanges();
+                    }
+                    trans.Commit();
+                }
+                catch
+                {
+                    trans.Rollback();
+                }
             }
         }
     }

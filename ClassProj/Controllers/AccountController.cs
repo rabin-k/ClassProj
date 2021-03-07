@@ -12,10 +12,13 @@ namespace ClassProj.Controllers
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager)
+        public AccountController(UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
 
         public IActionResult Index()
@@ -34,10 +37,15 @@ namespace ClassProj.Controllers
                     UserName = model.FullName,
                     EmailConfirmed = true,
                 };
+                
+                var userCreate = _userManager.CreateAsync(idUser, model.Password);
+                var result = await userCreate;
 
-                var result = await _userManager.CreateAsync(idUser, model.Password);
                 if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(idUser, "Admin");
                     return Redirect("/");
+                }
 
                 foreach (var error in result.Errors)
                 {
@@ -46,6 +54,40 @@ namespace ClassProj.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if(user != null)
+                {
+                    var result  = await _signInManager.PasswordSignInAsync(user, model.Password, true, lockoutOnFailure: false);
+                    if(result.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return Redirect("/");
+                    }
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+
+            return RedirectToAction(nameof(Login));
         }
     }
 }

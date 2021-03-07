@@ -1,6 +1,7 @@
 ﻿using ClassProj.Data.Entities;
 using ClassProj.Data.Services;
 using ClassProj.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace ClassProj.Controllers
 {
+    [Authorize]
     public class CollegeController : Controller
     {
         private readonly ICollegeService _collegeService;
